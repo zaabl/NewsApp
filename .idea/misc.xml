@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Zaabl/AndroidStudioProjects/NewsApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1495" />
+        <entry key="..\:/Users/Zaabl/AndroidStudioProjects/NewsApp/app/src/main/res/drawable/ic_all_news.xml" value="0.1495" />
+        <entry key="..\:/Users/Zaabl/AndroidStudioProjects/NewsApp/app/src/main/res/drawable/ic_baseline_favorite_24.xml" value="0.1495" />
+        <entry key="..\:/Users/Zaabl/AndroidStudioProjects/NewsApp/app/src/main/res/drawable/ic_breaking_news.xml" value="0.1495" />
+        <entry key="..\:/Users/Zaabl/AndroidStudioProjects/NewsApp/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1495" />
+        <entry key="..\:/Users/Zaabl/AndroidStudioProjects/NewsApp/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/Zaabl/AndroidStudioProjects/NewsApp/app/src/main/res/layout/fragment_article.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/Zaabl/AndroidStudioProjects/NewsApp/app/src/main/res/layout/fragment_breaking_news.xml" value="0.29683698296836986" />
+        <entry key="..\:/Users/Zaabl/AndroidStudioProjects/NewsApp/app/src/main/res/layout/fragment_item_article_preview.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/Zaabl/AndroidStudioProjects/NewsApp/app/src/main/res/layout/fragment_saved_news.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/Zaabl/AndroidStudioProjects/NewsApp/app/src/main/res/layout/fragment_search_news.xml" value="0.22826086956521738" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
