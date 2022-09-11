@@ -1,4 +1,4 @@
-package com.example.newsapp.common
+package com.example.newsapp.utils
 
 class Constants {
     companion object {

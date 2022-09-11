@@ -1,16 +1,16 @@
 package com.example.newsapp.di
 
-import android.content.Context
-import androidx.room.Room
-import com.example.newsapp.common.Constants
-import com.example.newsapp.data.local.dao.ArticleDao
-import com.example.newsapp.data.local.database.ArticleDatabase
+import com.example.newsapp.utils.Constants
 import com.example.newsapp.data.remote.NewsAPI
+import com.example.newsapp.data.repository.RemoteRepositoryImpl
+import com.example.newsapp.domain.repository.RemoteRepository
+import com.example.newsapp.utils.DispatcherProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -19,7 +19,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object RemoteModule {
 
     @Singleton
     @Provides
@@ -37,18 +37,20 @@ object AppModule {
             .create(NewsAPI::class.java)
     }
 
-    @Provides
-    fun provideArticleDao(articleDatabase: ArticleDatabase): ArticleDao {
-        return articleDatabase.getArticleDao()
-    }
-
-    @Provides
     @Singleton
-    fun provideAppDatabase(@ApplicationContext appContext: Context): ArticleDatabase{
-        return Room.databaseBuilder(
-            appContext,
-            ArticleDatabase::class.java,
-            "article_db.db"
-        ).build()
+    @Provides
+    fun provideRemoteRepository(newsAPI: NewsAPI): RemoteRepository = RemoteRepositoryImpl(newsAPI)
+
+    @Singleton
+    @Provides
+    fun provideDispatchers(): DispatcherProvider = object : DispatcherProvider {
+        override val main: CoroutineDispatcher
+            get() = Dispatchers.Main
+        override val io: CoroutineDispatcher
+            get() = Dispatchers.IO
+        override val default: CoroutineDispatcher
+            get() = Dispatchers.Default
+        override val unconfined: CoroutineDispatcher
+            get() = Dispatchers.Unconfined
     }
 }
