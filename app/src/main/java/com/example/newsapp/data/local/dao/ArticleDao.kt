@@ -1,7 +1,7 @@
 package com.example.newsapp.data.local.dao
 
 import androidx.room.*
-import com.example.newsapp.data.remote.model.Article
+import com.example.newsapp.data.local.entity.Article
 
 @Dao
 interface ArticleDao {
