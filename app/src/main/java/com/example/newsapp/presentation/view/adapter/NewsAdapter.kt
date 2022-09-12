@@ -21,7 +21,9 @@ class NewsAdapter :
                 tvTitle.text = article.title
                 tvDescription.text = article.description
                 tvPublishedAt.text = article.publishedAt
-                onItemClickListener?.let { it(article) }
+                itemView.setOnClickListener {
+                    onItemClickListener?.let { it(article) }
+                }
             }
             Glide.with(itemView).load(article.urlToImage).into(itemBinding.ivArticleImage)
         }

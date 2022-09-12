@@ -1,6 +1,6 @@
 package com.example.newsapp.data.remote.model
 
 data class Source(
-    val id: String,
+    var id: String,
     val name: String
 )
