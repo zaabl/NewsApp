@@ -12,6 +12,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsapp.R
+import com.example.newsapp.data.remote.model.Article
+import com.example.newsapp.data.remote.model.Source
 import com.example.newsapp.databinding.FragmentBreakingNewsBinding
 import com.example.newsapp.presentation.view.adapter.NewsAdapter
 import com.example.newsapp.presentation.viewmodel.BreakingNewsViewModel
@@ -40,18 +42,19 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
     }
 
     private fun fillRecyclerView(){
-        viewModel.getBreakingNews("us", 1)
+        viewModel.getBreakingNews("us")
         lifecycleScope.launchWhenStarted {
             viewModel.conversion.collect{event->
                 when(event){
                     is BreakingNewsViewModel.NewsEvent.Success ->{
                         bindingBreakingNews.paginationProgressBar.isVisible = false
                         newsAdapter.differ.submitList(event.listOfArticles)
-                        Log.e(TAG, "getBreakingNews: ${event.listOfArticles}")
-
                     }
                     is BreakingNewsViewModel.NewsEvent.Failure ->{
                         bindingBreakingNews.paginationProgressBar.isVisible = false
+                        event.errorText.let {
+                            Log.e(TAG, "fillRecyclerView: the request returned with an error: $it", )
+                        }
                     }
                     is BreakingNewsViewModel.NewsEvent.Loading ->{
                         bindingBreakingNews.paginationProgressBar.isVisible = true

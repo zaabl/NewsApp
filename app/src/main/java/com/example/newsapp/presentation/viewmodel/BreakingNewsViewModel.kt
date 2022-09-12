@@ -29,11 +29,11 @@ class BreakingNewsViewModel @Inject constructor(
 
     private val _conversion = MutableStateFlow<NewsEvent>(NewsEvent.Empty)
     val conversion: StateFlow<NewsEvent> = _conversion
-
-    fun getBreakingNews(countryCode: String, pageNumber: Int) {
+    val breakingNewsPage = 1
+    fun getBreakingNews(countryCode: String) {
         viewModelScope.launch(dispatchers.io) {
             _conversion.value = NewsEvent.Loading
-            when(val response = remoteRepository.getBreakingNews(countryCode, pageNumber)){
+            when(val response = remoteRepository.getBreakingNews(countryCode, breakingNewsPage)){
                 is Resource.Error -> _conversion.value = NewsEvent.Failure(response.message!!)
                 is Resource.Success -> {
                     _conversion.value = response.data?.let { NewsEvent.Success("Success", it.articles) }!!

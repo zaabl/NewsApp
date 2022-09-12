@@ -17,7 +17,7 @@ class NewsAdapter :
     inner class ArticleViewHolder(private val itemBinding: ItemArticlePreviewBinding): RecyclerView.ViewHolder(itemBinding.root){
         fun bind(article: Article) {
             itemBinding.apply {
-                tvSource.text = article.source.name
+                tvSource.text = article.source?.name
                 tvTitle.text = article.title
                 tvDescription.text = article.description
                 tvPublishedAt.text = article.publishedAt
@@ -40,7 +40,7 @@ class NewsAdapter :
     val differ = AsyncListDiffer(this, differCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
-        val itemBinding = ItemArticlePreviewBinding.inflate(LayoutInflater.from(parent.context))
+        val itemBinding = ItemArticlePreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ArticleViewHolder(itemBinding)
     }
 
