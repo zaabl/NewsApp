@@ -9,7 +9,7 @@ interface ArticleDao {
     suspend fun insertArticle(article: Article) : Long
 
     @Query("SELECT * FROM articles")
-    suspend fun getAllArticles(): List <Article>
+    suspend fun getSavedArticles(): List <Article>
 
     @Delete
     suspend fun deleteArticle(article: Article)

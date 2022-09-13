@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class RemoteRepositoryImpl @Inject constructor (
     private val newsAPI: NewsAPI
-        ) : RemoteRepository {
+    ) : RemoteRepository {
     override suspend fun getBreakingNews(
         countryCode: String,
         pageNumber: Int

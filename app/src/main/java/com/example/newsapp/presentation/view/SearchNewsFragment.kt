@@ -44,8 +44,23 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
+        recyclerviewItemClickListener()
         search()
-//        fillRecyclerView()
+        fillRecyclerView()
+    }
+
+    private fun recyclerviewItemClickListener(){
+        newsAdapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putSerializable("article", it)
+                if(it.source?.id == null)
+                    it.source?.id = it.source?.name.toString()
+            }
+            findNavController().navigate(
+                R.id.action_searchNewsFragment_to_articleFragment,
+                bundle
+            )
+        }
     }
 
     private fun search(){
