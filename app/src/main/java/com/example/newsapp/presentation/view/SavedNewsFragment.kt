@@ -39,7 +39,10 @@ class SavedNewsFragment : Fragment(R.layout.fragment_saved_news) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        startRecyclerView()
+    }
 
+    private fun startRecyclerView(){
         setupRecyclerView()
         recyclerviewItemClickListener()
         onSwipeDelete()
@@ -105,8 +108,10 @@ class SavedNewsFragment : Fragment(R.layout.fragment_saved_news) {
                 Snackbar.make(requireView(), "Successfully deleted article", Snackbar.LENGTH_LONG).apply {
                     setAction("Undo"){
                         viewModel.saveArticle(article)
+                        startRecyclerView()
                     }
                 }.show()
+                startRecyclerView()
             }
         }
 
