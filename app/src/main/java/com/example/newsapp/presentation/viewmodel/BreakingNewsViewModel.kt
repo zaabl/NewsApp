@@ -21,22 +21,50 @@ class BreakingNewsViewModel @Inject constructor(
 ) : ViewModel() {
 
     sealed class NewsEvent{
-        class Success(val resultText: String, val listOfArticles: MutableList<Article>): NewsEvent()
+        class Success(val resultText: String, val newsResponse: NewsResponse): NewsEvent()
         class Failure(val errorText: String): NewsEvent()
         object Loading: NewsEvent()
         object Empty: NewsEvent()
     }
 
+    var breakingNewsResponse:NewsResponse? = null
+
     private val _conversion = MutableStateFlow<NewsEvent>(NewsEvent.Empty)
     val conversion: StateFlow<NewsEvent> = _conversion
-    val breakingNewsPage = 1
+    var breakingNewsPage = 1
+
     fun getBreakingNews(countryCode: String) {
         viewModelScope.launch(dispatchers.io) {
             _conversion.value = NewsEvent.Loading
             when(val response = remoteRepository.getBreakingNews(countryCode, breakingNewsPage)){
                 is Resource.Error -> _conversion.value = NewsEvent.Failure(response.message!!)
                 is Resource.Success -> {
-                    _conversion.value = response.data?.let { NewsEvent.Success("Success", it.articles) }!!
+//                    breakingNewsPage++
+//                    if(breakingNewsResponse == null){
+//                        breakingNewsResponse = response.data
+////                        Log.d("debug", "breakingNewsResponse is not null now")
+////                        Log.d("debug", breakingNewsResponse.toString())
+//                    } else{
+//                        val oldArticles = breakingNewsResponse?.articles
+//                        val newArticles = response.data?.articles
+//                        oldArticles?.addAll(newArticles!!)
+//                        breakingNewsResponse!!.articles.addAll(oldArticles!!)
+//                        val temp = oldArticles!!
+//                        Log.d("debug", temp.size.toString())
+//                    }
+//                    _conversion.value = response.data?.let { NewsEvent.Success("Success", breakingNewsResponse!!) }!!
+                    response.data?.let { resultResponse ->
+                        breakingNewsPage++
+                        if(breakingNewsResponse == null) {
+                            breakingNewsResponse = resultResponse
+                        } else {
+                            val oldArticles = breakingNewsResponse?.articles
+                            val newArticles = resultResponse.articles
+                            oldArticles?.addAll(newArticles)
+                            Log.d("debug", oldArticles!!.size.toString())
+                        }
+                        _conversion.value = response.data.let { NewsEvent.Success("Success", breakingNewsResponse ?: resultResponse) }!!
+                    }
                 }
             }
         }

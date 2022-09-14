@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentBreakingNewsBinding
 import com.example.newsapp.databinding.FragmentSearchNewsBinding
@@ -19,6 +20,7 @@ import com.example.newsapp.presentation.view.adapter.NewsAdapter
 import com.example.newsapp.presentation.viewmodel.BreakingNewsViewModel
 import com.example.newsapp.presentation.viewmodel.SearchNewsViewModel
 import com.example.newsapp.utils.Constants
+import com.example.newsapp.utils.Constants.Companion.QUERY_PAGE_SIZE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
@@ -43,10 +45,41 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initializeRecyclerView()
+        search()
+    }
+
+    private fun initializeRecyclerView(){
         setupRecyclerView()
         recyclerviewItemClickListener()
-        search()
         fillRecyclerView()
+    }
+
+    var isLoading = false
+    var isLastPage = false
+    var isScrolling = false
+
+    val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+
+            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+            val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+            val visibleItemCount = layoutManager.childCount
+            val totalItemCount = layoutManager.itemCount
+
+            val isNotLoadingAndNotLastPage = !isLoading && !isLastPage
+            val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
+            val isNotAtBeginning = firstVisibleItemPosition >= 0
+            val isTotalMoreThanVisible = totalItemCount >= QUERY_PAGE_SIZE
+            val shouldPaginate =
+                isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
+                        isTotalMoreThanVisible && isScrolling
+            if (shouldPaginate) {
+                viewModel.getSearchNews(bindingSearchNews.etSearch.text.toString())
+                isScrolling = false
+            }
+        }
     }
 
     private fun recyclerviewItemClickListener(){
@@ -72,6 +105,7 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
                 it?.let {
                     if(it.toString().isNotEmpty()){
                         viewModel.getSearchNews(it.toString())
+                        initializeRecyclerView()
                     }
                 }
             }
@@ -84,7 +118,11 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
                 when(event){
                     is SearchNewsViewModel.NewsEvent.Success ->{
                         bindingSearchNews.paginationProgressBar.isVisible = false
-                        newsAdapter.differ.submitList(event.listOfArticles)
+                        newsAdapter.differ.submitList(event.newsResponse.articles)
+                        val totalPages = event.newsResponse.totalResults / QUERY_PAGE_SIZE + 2
+                        isLastPage = viewModel.searchNewsPage == totalPages
+                        if(isLastPage)
+                            bindingSearchNews.rvSearchNews.setPadding(0, 0, 0, 0)
                     }
                     is SearchNewsViewModel.NewsEvent.Failure ->{
                         bindingSearchNews.paginationProgressBar.isVisible = false
@@ -106,6 +144,7 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
         bindingSearchNews.rvSearchNews.apply {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)
+            addOnScrollListener(this@SearchNewsFragment.scrollListener)
         }
     }
 }
